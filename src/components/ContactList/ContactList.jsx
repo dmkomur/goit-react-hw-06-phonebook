@@ -3,27 +3,32 @@ import {
   StyledBtnDel,
   StyledContactList,
 } from './ContactList.Styled';
-import PropTypes from 'prop-types';
 
-export const ContactList = ({ fileList, onDelete }) => {
+import { selectPhones, selectFilter } from '../../Redux/phoneSelectors';
+import { useSelector, useDispatch } from 'react-redux';
+import { delPhone } from 'Redux/phoneSlice';
+
+export const ContactList = ({ fileList }) => {
+  const dispatcher = useDispatch();
+  const contacts = useSelector(selectPhones);
+  const currentFilter = useSelector(selectFilter);
+  const filteredContacts = contacts.filter(el =>
+    el.name.toLowerCase().includes(currentFilter.toLocaleLowerCase())
+  );
+
   return (
     <StyledContactList>
       <h3>Contacts</h3>
-      {fileList.map(el => (
+      {filteredContacts.map(el => (
         <StyledContact key={el.id}>
           <span>
             {el.name}: {el.number}
           </span>
-          <StyledBtnDel id={el.id} onClick={() => onDelete(el.id)}>
+          <StyledBtnDel id={el.id} onClick={() => dispatcher(delPhone(el.id))}>
             delete
           </StyledBtnDel>
         </StyledContact>
       ))}
     </StyledContactList>
   );
-};
-
-ContactList.propTypes = {
-  fileList: PropTypes.array.isRequired,
-  onDelete: PropTypes.func.isRequired,
 };
