@@ -16,6 +16,7 @@ import { phonebookReducer } from './phoneSlice';
 const persistConfig = {
   key: 'root',
   storage,
+  blacklist: ['filter']
 };
 const persistedReducer = persistReducer(persistConfig, phonebookReducer);
 
